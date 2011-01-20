@@ -133,6 +133,7 @@ namespace JaxUploader
             //updateStatusStripText("Files processed, starting upload...");
             sendZipToServer();
             markFilesUploaded(files);
+            copyFilesToBackup(files);
         }
 
         private void sendZipToServer()
@@ -143,6 +144,17 @@ namespace JaxUploader
             string outdata = UploadFileEx("upload.zip", "http://www.lolbase.net/upload/app/d3fd0722cf163280090c404c98eef83f", "logfile", "application/zip", querystring, cookies);
             //updateStatusStripText("Upload complete!");
             addToLog("Upload complete!");
+        }
+
+        private void copyFilesToBackup(StringCollection files)
+        {
+            addToLog("Backing up log files");
+            string backup_dir = clientPath + @"\Air\logs\Backups";
+            Directory.CreateDirectory(backup_dir);
+            foreach (string file in files)
+            {
+                File.Copy(clientPath + @"\Air\logs\" + file, backup_dir + @"\" + file, true);
+            }
         }
 
         private void markFilesUploaded(StringCollection files)
